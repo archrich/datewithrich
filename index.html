@@ -870,6 +870,11 @@ resetIdleTimer();
                 osc.stop(now + 0.4 + i * 0.05);
             }
 
+            // Prevent choosing a past date
+const now = new Date();
+now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+dateTimeInput.min = now.toISOString().slice(0, 16);
+            
             // Move screens
             askScreen.style.display = 'none';
             plannerScreen.style.display = 'flex';
@@ -1254,7 +1259,14 @@ resetIdleTimer();
                 alert('Aww, please pick a date, food type, and location to make it official! 💖');
                 return;
             }
+            
+    // Prevent past dates
+    const selectedDate = new Date(dateTimeInput.value);
 
+    if (selectedDate < new Date()) {
+        alert("⏰ Nice try! We can't go on a date in the past. Pick a future date! 💖");
+        return;
+    }
             const loadingOverlay = document.getElementById('loading-overlay');
             const loadingStep = document.getElementById('loading-step');
             const loadingFill = document.getElementById('loading-fill');
