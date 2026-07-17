@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Use Fredoka for cute rounded typography, and Space Grotesk for interactive forms -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <title>Will You Go On A Date With Me? 🌹</title>
+    <style>
+        :root {
+            --primary-pink: #FF6B8B;
+            --accent-pink-dark: #E05270;
+            --secondary-peach: #FFD2A5;
+            --soft-yellow: #FFF5B8;
+            --soft-cream: #FFFDF9;
+            --text-dark: #3D2C34;
+            --text-muted: #8C727A;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; /* Remove tap flash on mobile */
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #FFE6EB;
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+            padding: 1rem;
+        }
+
+        /* Floating Hearts Background */
+        .hearts-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .heart-particle {
+            position: absolute;
+            color: rgba(255, 107, 139, 0.25);
+            font-size: 1.5rem;
+            animation: floatUp 8s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Main Container */
+        .card {
+            background: var(--white);
+            border: 8px solid var(--text-dark);
+            border-radius: 32px;
+            padding: 2.5rem 1.5rem;
+            max-width: 440px;
+            width: 100%;
+            box-shadow: 12px 12px 0px var(--text-dark);
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: relative;
+        }
+
+        /* Interactive Music Indicator */
+        .music-indicator {
+            position: absolute;
+            top: 16px;
+            right: 24px;
+            font-size: 1.5rem;
+            animation: musicFloat 2s ease-in-out infinite alternate;
+            z-index: 3;
+        }
+
+        @keyframes musicFloat {
+            0% { transform: translateY(0) scale(0.9); }
+            100% { transform: translateY(-6px) scale(1.1); }
+        }
+
+        /* Cute Character area */
+        .mascot-area {
+            font-size: 4.5rem;
+            margin-bottom: 1rem;
+            animation: wiggle 1.5s ease-in-out infinite;
+            display: inline-block;
+            position: relative;
+            z-index: 3;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-8deg) scale(1); }
+            50% { transform: rotate(8deg) scale(1.08); }
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-pink);
+            margin-bottom: 0.75rem;
+            line-height: 1.2;
+            position: relative;
+            z-index: 3;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 3;
+        }
+
+        .attempt-counter {
+            font-size: 0.9rem;
+            color: var(--primary-pink);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            min-height: 20px;
+            position: relative;
+            z-index: 3;
+        }
+
+        /* Expanded Interactive Buttons Container - much taller vertical range! */
+        .btn-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            position: relative;
+            height: 280px; /* Highly expanded bounding range for wild runaway play */
+            margin-top: 1rem;
+            border: 4px dashed rgba(255, 107, 139, 0.2);
+            border-radius: 20px;
+            background: rgba(255, 107, 139, 0.02);
+            padding: 1rem;
+            z-index: 10;
+        }
+
+        .btn {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding: 0.85rem 1.75rem;
+            border: 4px solid var(--text-dark);
+            border-radius: 16px;
+            cursor: pointer;
+            outline: none;
+            touch-action: manipulation;
+        }
+
+        .btn-yes {
+            background-color: #5BE5A4;
+            color: var(--text-dark);
+            box-shadow: 4px 4px 0px var(--text-dark);
+            position: absolute;
+            left: 20px;
+            bottom: 20px;
+            z-index: 11;
+        }
+
+        .btn-yes:hover {
+            background-color: #49D18F;
+            transform: scale(1.05) translateY(-2px);
+        }
+
+        /* Crucial absolute visibility setup for runaway button to always be visible in absolute foreground */
+        .btn-no {
+            background-color: var(--primary-pink);
+            color: var(--text-dark);
+            box-shadow: 4px 4px 0px var(--text-dark);
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            z-index: 9999 !important; /* Keep above everything including header elements */
+            transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Planner form screen */
+        .planner-form {
+            display: none; /* Shown after clicking Yes */
+            flex-direction: column;
+            gap: 1.25rem;
+            text-align: left;
+        }
+
+        .planner-form h2 {
+            font-size: 1.6rem;
+            color: #5BE5A4;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        input, select {
+            font-family: 'Space Grotesk', sans-serif;
+            padding: 0.75rem 1rem;
+            border: 4px solid var(--text-dark);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            background: var(--soft-cream);
+            color: var(--text-dark);
+            outline: none;
+            transition: box-shadow 0.2s;
+        }
+
+        input:focus, select:focus {
+            box-shadow: 0 0 0 4px var(--primary-pink);
+        }
+
+        /* Food selector custom pills */
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+
+        .food-option {
+            background: var(--white);
+            border: 3px solid var(--text-dark);
+            border-radius: 10px;
+            padding: 0.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .food-option.selected {
+            background: var(--soft-yellow);
+            transform: scale(1.03) translateY(-1px);
+            box-shadow: 3px 3px 0px var(--text-dark);
+        }
+
+        .food-feedback {
+            min-height: 34px;
+            margin-top: 0.7rem;
+            text-align: center;
+            font-weight: 700;
+            color: var(--primary-pink);
+            font-size: 0.95rem;
+            line-height: 1.25;
+        }
+
+        .food-feedback.pop {
+            animation: foodPop 0.48s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .achievement-toast {
+            position: fixed;
+            left: 50%;
+            top: 18px;
+            transform: translateX(-50%) translateY(-140%);
+            background: var(--soft-yellow);
+            border: 4px solid var(--text-dark);
+            box-shadow: 5px 5px 0 var(--text-dark);
+            border-radius: 16px;
+            padding: 0.8rem 1rem;
+            z-index: 10000;
+            font-weight: 700;
+            text-align: center;
+            max-width: calc(100vw - 32px);
+            transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .achievement-toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: rgba(255, 230, 235, 0.96);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .loading-panel {
+            width: min(420px, 100%);
+            background: var(--white);
+            border: 6px solid var(--text-dark);
+            border-radius: 24px;
+            box-shadow: 10px 10px 0 var(--text-dark);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .loading-panel h3 {
+            color: var(--primary-pink);
+            margin-bottom: 1rem;
+            font-size: 1.45rem;
+        }
+
+        .loading-step {
+            font-size: 1rem;
+            min-height: 28px;
+            margin-bottom: 0.8rem;
+            font-weight: 700;
+        }
+
+        .loading-bar {
+            height: 20px;
+            border: 3px solid var(--text-dark);
+            border-radius: 999px;
+            overflow: hidden;
+            background: var(--soft-cream);
+        }
+
+        .loading-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--primary-pink);
+            transition: width 0.5s ease;
+        }
+
+        .burst-particle {
+            position: fixed;
+            z-index: 99998;
+            pointer-events: none;
+            font-size: 1.6rem;
+            animation: burstAway 1s ease-out forwards;
+        }
+
+        .screen-shake {
+            animation: screenShake 0.35s linear;
+        }
+
+        .rainbow-flash::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 99997;
+            background: linear-gradient(135deg,
+                rgba(255,0,0,.16),
+                rgba(255,165,0,.16),
+                rgba(255,255,0,.16),
+                rgba(0,128,0,.16),
+                rgba(0,0,255,.16),
+                rgba(128,0,128,.16));
+            animation: flashFade 0.55s ease forwards;
+        }
+
+        @keyframes foodPop {
+            0% { transform: scale(0.65) rotate(-4deg); opacity: 0; }
+            60% { transform: scale(1.12) rotate(2deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0); opacity: 1; }
+        }
+
+        @keyframes burstAway {
+            0% { transform: translate(0,0) scale(.5) rotate(0deg); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(1.4) rotate(420deg); opacity: 0; }
+        }
+
+        @keyframes screenShake {
+            0%,100% { transform: translate(0,0); }
+            20% { transform: translate(-7px,3px); }
+            40% { transform: translate(6px,-4px); }
+            60% { transform: translate(-5px,-3px); }
+            80% { transform: translate(4px,4px); }
+        }
+
+        @keyframes flashFade {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .btn-submit {
+            background-color: var(--primary-pink);
+            color: var(--text-dark);
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding: 0.9rem;
+            border: 4px solid var(--text-dark);
+            border-radius: 16px;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px var(--text-dark);
+            transition: all 0.2s;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--accent-pink-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Celebrate/Success screen */
+        .celebrate-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .celebrate-screen h2 {
+            font-size: 2rem;
+            color: var(--primary-pink);
+        }
+
+        .summary-box {
+            background: var(--soft-cream);
+            border: 4px solid var(--text-dark);
+            border-radius: 16px;
+            padding: 1.25rem;
+            width: 100%;
+            text-align: left;
+            box-shadow: 4px 4px 0px var(--text-dark);
+        }
+
+        .summary-item {
+            margin-bottom: 0.6rem;
+            font-size: 1rem;
+        }
+
+        .summary-item strong {
+            color: var(--primary-pink);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hearts-bg" id="hearts-bg"></div>
+
+    <div class="achievement-toast" id="achievement-toast">🏆 Achievement Unlocked!</div>
+
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-panel">
+            <h3>Preparing Romance... 💘</h3>
+            <p style="color: var(--text-muted); margin: -0.35rem 0 1rem; font-size: 0.9rem;">
+                Important romantic calculations are in progress.
+            </p>
+            <div class="loading-step" id="loading-step">Consulting the food gods...</div>
+            <div class="loading-bar"><div class="loading-fill" id="loading-fill"></div></div>
+        </div>
+    </div>
+
+    <div class="card" id="date-card">
+        <!-- Interactive Music Status Icon -->
+        <div class="music-indicator" id="music-indicator">🎵✨</div>
+
+        <!-- Initial Screen -->
+        <div id="ask-screen">
+            <div class="mascot-area" id="mascot">🧸</div>
+            <h1>Will You Go On A Date With Me? 🌹</h1>
+            <p class="question-text">I promise loads of laughter, great stories, and amazing food! 💖</p>
+            
+            <div class="attempt-counter" id="attempt-text">Try to click No if you dare! 😉</div>
+            
+            <!-- Strict container for buttons -->
+            <div class="btn-wrapper" id="btn-wrapper">
+                <button class="btn btn-yes" id="btn-yes">YES! 🎉</button>
+                <button class="btn btn-no" id="btn-no">No 🥺</button>
+            </div>
+        </div>
+
+        <!-- Details Planner Screen -->
+        <div id="planner-screen" class="planner-form">
+            <h2>Yay! Let's Plan It! 🍕</h2>
+            
+            <div class="form-group">
+                <label for="date-time">When are you free?</label>
+                <input type="datetime-local" id="date-time" required>
+            </div>
+
+            <div class="form-group">
+                <label>What are we eating?</label>
+                <div class="food-grid" id="food-grid">
+                    <div class="food-option" data-food="Asian 🍜">🍜 Asian</div>
+                    <div class="food-option" data-food="Mexican 🌮">🌮 Mexican</div>
+                    <div class="food-option" data-food="Italian 🍕">🍕 Italian</div>
+                    <div class="food-option" data-food="Burgers 🍔">🍔 Burgers</div>
+                    <div class="food-option" data-food="Desserts 🍰">🍰 Desserts</div>
+                    <div class="food-option" data-food="Surprise Me 🔮">🔮 Surprise</div>
+                </div>
+                <div class="food-feedback" id="food-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Where should we meet?</label>
+                <input type="text" id="location" placeholder="e.g. Cozy Cafe, Riverside Park, etc." required>
+            </div>
+
+            <button class="btn-submit" id="btn-confirm">Set the Date! ✨</button>
+        </div>
+
+        <!-- Success Screen -->
+        <div id="success-screen" class="celebrate-screen">
+            <div class="mascot-area" style="font-size: 5rem; animation: wiggle 1s infinite;">🎉💖🥳</div>
+            <h2>It's an Official Date!</h2>
+            <p>I can't wait! Here's our planned adventure:</p>
+            
+            <div class="summary-box">
+                <div class="summary-item">📅 <strong>When:</strong> <span id="summary-time">Soon!</span></div>
+                <div class="summary-item">🍽️ <strong>Food:</strong> <span id="summary-food">Yummy stuff</span></div>
+                <div class="summary-item">📍 <strong>Where:</strong> <span id="summary-location">A perfect place</span></div>
+            </div>
+
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 1rem;">Take a screenshot and send it to me! 📸</p>
+        </div>
+    </div>
+
+    <script>
+        // Audio Synth Variables
+        let audioCtx = null;
+        let tuneInterval = null;
+        let musicStarted = false;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        // Slow-motion famous retro "Ohhh yeeeaaahh" vocal styling
+        function playSuccessVoice() {
+            try {
+                const utterance = new SpeechSynthesisUtterance("oh yeah, baby!");
+                utterance.pitch = 0.45; // Super deep retro pitch
+                utterance.rate = 0.55;  // Slow, drawn out slow-motion speed
+                utterance.volume = 1.0;
+                window.speechSynthesis.speak(utterance);
+            } catch (err) {
+                console.log("Speech synthesis failed", err);
+            }
+        }
+
+        // Generate funny cartoon boing noises when "No" runs away
+        function playCrazyNoise() {
+            initAudio();
+            if (!audioCtx) return;
+
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.type = ['sawtooth', 'triangle', 'square'][Math.floor(Math.random() * 3)];
+            
+            const startFreq = Math.random() * 400 + 300;
+            const endFreq = Math.random() * 1200 + 600;
+            
+            osc.frequency.setValueAtTime(startFreq, now);
+            osc.frequency.exponentialRampToValueAtTime(endFreq, now + 0.25);
+            
+            gain.gain.setValueAtTime(0.12, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+            
+            osc.start(now);
+            osc.stop(now + 0.25);
+        }
+
+        // Fast high-tempo, major-scale pentatonic "Anime-ish" background synth song
+        function startAnimeTune() {
+            initAudio();
+            if (!audioCtx || musicStarted) return;
+            musicStarted = true;
+
+            // Fast happy J-Pop progression notes (C5, D5, E5, G5, A5, C6)
+            const melody = [
+                523.25, 587.33, 659.25, 783.99, 880.00, 1046.50,
+                783.99, 659.25, 587.33, 523.25, 880.00, 783.99,
+                659.25, 1046.50, 880.00, 587.33
+            ];
+            
+            let noteIdx = 0;
+            tuneInterval = setInterval(() => {
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.type = 'sine';
+                
+                const freq = melody[noteIdx % melody.length];
+                osc.frequency.setValueAtTime(freq, now);
+                
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+                
+                osc.start(now);
+                osc.stop(now + 0.16);
+                
+                noteIdx++;
+            }, 180); // Fast 180ms steps for rapid anime melody
+        }
+
+        // Play sound and start music upon first interaction anywhere
+        function startMusicOnInteract() {
+            if (!musicStarted) {
+                startAnimeTune();
+                document.getElementById('music-indicator').textContent = '🎵💖🔥';
+            }
+        }
+        
+        // Listen to all possible start/load interactions to play as fast as browser policy allows!
+        window.addEventListener('click', startMusicOnInteract);
+        window.addEventListener('mousemove', startMusicOnInteract);
+        window.addEventListener('touchstart', startMusicOnInteract);
+        window.addEventListener('keydown', startMusicOnInteract);
+
+        // Floating Hearts Background generator
+        const heartsBg = document.getElementById('hearts-bg');
+        const heartIcons = ['💖', '❤️', '💝', '✨', '🌸', '💕'];
+        
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart-particle';
+            heart.textContent = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            
+            const duration = Math.random() * 4 + 6;
+            heart.style.animationDuration = duration + 's';
+            heart.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
+            
+            heartsBg.appendChild(heart);
+            setTimeout(() => {
+                heart.remove();
+            }, duration * 1000);
+        }
+        setInterval(createHeart, 600);
+
+        // Runway Game setup with strictly bounded percentages inside the btn-wrapper
+        const btnNo = document.getElementById('btn-no');
+        const btnWrapper = document.getElementById('btn-wrapper');
+        const attemptText = document.getElementById('attempt-text');
+        const mascot = document.getElementById('mascot');
+        
+        let noAttempts = 0;
+
+        function runaway(e) {
+            noAttempts++;
+            playCrazyNoise();
+
+            // Dynamic mascot reactions based on unlimited attempts
+            if (noAttempts === 1) {
+                mascot.textContent = '😮';
+                attemptText.textContent = "Hey! No clicking No! 😤 (Attempts: 1)";
+            } else if (noAttempts === 3) {
+                mascot.textContent = '🥺';
+                attemptText.textContent = "Are you seriously trying to say no? (Attempts: 3)";
+            } else if (noAttempts === 5) {
+                mascot.textContent = '😢';
+                attemptText.textContent = "My heart is breaking! Stop! (Attempts: 5)";
+            } else if (noAttempts === 8) {
+                mascot.textContent = '😈';
+                attemptText.textContent = "Almost impossible to click, right? Haha! (Attempts: 8)";
+            } else if (noAttempts === 15) {
+                mascot.textContent = '😵‍💫';
+                attemptText.textContent = "Wow! You are incredibly persistent! (Attempts: 15)";
+            } else if (noAttempts === 30) {
+                mascot.textContent = '👾';
+                attemptText.textContent = "Is this a speedrun? Speedrunner status! (Attempts: 30)";
+            } else {
+                attemptText.textContent = `No Attempts: ${noAttempts} 🎯 Keep trying!`;
+            }
+
+            // To support perfect responsive mobile scaling (iPhone, Google Pixel, etc.) 
+            // we constrain position strictly using client measurements of the btn-wrapper container.
+            const wrapperRect = btnWrapper.getBoundingClientRect();
+            const btnRect = btnNo.getBoundingClientRect();
+
+            // Safe maximum widths and heights relative to the wrapper (expanded play area!)
+            const maxX = wrapperRect.width - btnRect.width - 24;
+            const maxY = wrapperRect.height - btnRect.height - 24;
+
+            // Generate random but strictly constrained safe coordinates
+            const targetX = Math.max(12, Math.floor(Math.random() * maxX));
+            const targetY = Math.max(12, Math.floor(Math.random() * maxY));
+
+            // Set the absolute coordinates relative to the parent btn-wrapper container
+            btnNo.style.position = 'absolute';
+            btnNo.style.left = `${targetX}px`;
+            btnNo.style.top = `${targetY}px`;
+            btnNo.style.right = 'auto';
+            btnNo.style.bottom = 'auto';
+        }
+
+        // Run away listeners (highly touch-responsive for iOS/Android taps)
+        btnNo.addEventListener('mouseenter', runaway);
+        btnNo.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Prevents double click fire or zooming
+            runaway();
+        });
+
+        // Trigger Yes on click
+        const btnYes = document.getElementById('btn-yes');
+        const askScreen = document.getElementById('ask-screen');
+        const plannerScreen = document.getElementById('planner-screen');
+
+        function triggerYes() {
+            initAudio();
+            playSuccessVoice();
+
+            // Multi-oscillator sparkles sound effect
+            const now = audioCtx.currentTime;
+            for (let i = 0; i < 5; i++) {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25 * (1 + i * 0.25), now + i * 0.05);
+                osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.35 + i * 0.05);
+                gain.gain.setValueAtTime(0.08, now + i * 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35 + i * 0.05);
+                osc.start(now + i * 0.05);
+                osc.stop(now + 0.4 + i * 0.05);
+            }
+
+            // Move screens
+            askScreen.style.display = 'none';
+            plannerScreen.style.display = 'flex';
+        }
+
+        btnYes.addEventListener('click', triggerYes);
+        btnNo.addEventListener('click', runaway); // Endless runaway even on clicks
+
+        // Food selection reactions
+        const foodOptions = document.querySelectorAll('.food-option');
+        const foodFeedback = document.getElementById('food-feedback');
+        const achievementToast = document.getElementById('achievement-toast');
+        let selectedFood = '';
+        let foodClickCount = 0;
+        let lastReactionIndex = {};
+
+        const foodReactions = {
+            'Asian 🍜': [
+                'Damn, noodles? You really know how to make a good decision.',
+                'I love me some noodles. This date is already looking dangerous.',
+                'Oh, we doing Asian food? Say less.',
+                'Pho real, that is an elite choice.',
+                'Ramen on a date? You might actually be perfect.',
+                'Sushi? Okay, fancy taste detected.',
+                'You picked Asian food and somehow got even more attractive.',
+                'Dumplings better be involved or I am filing a complaint.',
+                'I was hoping you would pick this one.',
+                'Noodles, rice, dumplings—yeah, we are about to eat good.',
+                'That choice just earned you ten extra cool points.',
+                'Asian food never misses, and apparently neither do you.',
+                'We are absolutely ordering way too much food.',
+                'You had me at noodles.',
+                'Okay, now I am genuinely excited.',
+                'This is the kind of decision-making I respect.',
+                'You choose the restaurant and I will bring the appetite.',
+                'I can already hear the chopsticks clicking.',
+                'That is a strong pick. A very strong pick.',
+                'You just made this date ten times better.',
+                'If there is spicy ramen, I am all in.',
+                'This choice has main-character energy.',
+                'I knew you had good taste.',
+                'The noodle council officially approves.',
+                'Asian food it is. Prepare for excessive ordering.'
+            ],
+            'Mexican 🌮': [
+                'Damn, tacos? You really came to win.',
+                'I love me some tacos.',
+                'Holy guacamole, that is a great choice.',
+                'Tacos on a date? Absolutely yes.',
+                'You picked Mexican food and now I am hungry immediately.',
+                'Okay, but we are getting chips and queso too.',
+                'That choice just made the whole date better.',
+                'Taco-bout excellent taste.',
+                'I hope you are ready to fight over the last chip.',
+                'Mexican food never disappoints, and neither did that choice.',
+                'You had me at tacos.',
+                'We are definitely ordering too much queso.',
+                'That was the correct answer and I will not hear arguments.',
+                'Spicy food and good company? Perfect combination.',
+                'I knew you were going to pick something good.',
+                'The salsa better be hot and the conversation even hotter.',
+                'This date just got fifty percent more fun.',
+                'Tacos, burritos, enchiladas—I support all of it.',
+                'You choose the tacos, I will handle the guac.',
+                'That is a top-tier food decision.',
+                'Nacho average choice. Yeah, I said it.',
+                'If there is street corn, we are ordering it.',
+                'The tortilla spirits are pleased.',
+                'This is exactly the kind of energy I was hoping for.',
+                'Mexican food it is. Bring on the tacos.'
+            ],
+            'Italian 🍕': [
+                'Damn, pizza? You really know the way to my heart.',
+                'I love me some pizza.',
+                'Mamma mia, now that is a choice.',
+                'Italian food on a date is basically unbeatable.',
+                'You picked pasta and instantly improved my mood.',
+                'Okay, but we are absolutely getting breadsticks.',
+                'That choice deserves a chef kiss.',
+                'Pizza, pasta, and you? Strong lineup.',
+                'I was secretly hoping you would pick Italian.',
+                'This date just became dangerously cheesy.',
+                'You had me at pizza.',
+                'We are ordering dessert too. It is non-negotiable.',
+                'That was a five-star decision.',
+                'If there is garlic bread, I am sold.',
+                'You choose the pasta and I will pretend not to steal a bite.',
+                'Italian food never misses.',
+                'That choice has serious date-night energy.',
+                'The mozzarella gods are smiling.',
+                'I can already smell the garlic bread.',
+                'Okay, now I am craving lasagna.',
+                'This is the kind of romance I understand.',
+                'Pizza is always the right answer.',
+                'You picked Italian and somehow made this classy.',
+                'That choice just earned a dramatic chef kiss.',
+                'Italian food it is. Let us get unnecessarily full.'
+            ],
+            'Burgers 🍔': [
+                'Damn, a burger? I respect that.',
+                'I love me a good burger.',
+                'Burgers and fries? That is my kind of date.',
+                'You picked burgers, so clearly you understand happiness.',
+                'Okay, but we are getting extra fries.',
+                'That choice is absolutely stacked.',
+                'I was hoping somebody would say burgers.',
+                'You had me at cheeseburger.',
+                'This date just got deliciously casual.',
+                'I hope you like stealing fries because I definitely do.',
+                'That was a solid food decision.',
+                'Burger night? Say less.',
+                'We are definitely ordering milkshakes too.',
+                'You choose the toppings and I will judge respectfully.',
+                'That choice has big comfort-food energy.',
+                'I can already hear the grill sizzling.',
+                'If the burger is messy, it is probably good.',
+                'This is exactly the kind of date I can get behind.',
+                'Burgers never let anyone down.',
+                'The fries better be crispy or we riot.',
+                'You picked burgers and immediately passed the vibe check.',
+                'That is a ten-out-of-ten choice.',
+                'I hope you are ready for an unreasonable amount of ketchup.',
+                'The burger council approves.',
+                'Burgers it is. Prepare to eat like champions.'
+            ],
+            'Desserts 🍰': [
+                'Damn, dessert first? I like how you think.',
+                'I love me some cake.',
+                'You picked desserts and honestly that is iconic.',
+                'Okay, so we are skipping straight to the best part.',
+                'That choice is dangerously sweet.',
+                'I was hoping you would pick dessert.',
+                'You had me at cake.',
+                'This date just became significantly cuter.',
+                'Calories do not count on dates. That is science.',
+                'We are getting at least two things and sharing neither.',
+                'That was the sweetest possible answer.',
+                'I hope you like chocolate because I am ordering it.',
+                'Dessert as the main event? Absolutely.',
+                'This is the kind of chaos I support.',
+                'You choose the cake and I will choose the ice cream.',
+                'That choice just earned extra sprinkles.',
+                'The cupcake council has approved this date.',
+                'Okay, now I am genuinely excited.',
+                'I respect anyone who prioritizes dessert.',
+                'This is a very strong personality trait.',
+                'Brownies, cheesecake, cookies—I support all of it.',
+                'You picked dessert and won immediately.',
+                'That was a top-tier sweet-tooth decision.',
+                'We are about to make some irresponsible bakery choices.',
+                'Dessert it is. Bring on the sugar rush.'
+            ],
+            'Surprise Me 🔮': [
+                'Damn, you really said surprise me. Bold.',
+                'I love a little mystery.',
+                'Okay, adventurous. I see you.',
+                'You really handed me all the power.',
+                'That is either very brave or very dangerous.',
+                'I respect the confidence.',
+                'You picked chaos and honestly I support it.',
+                'The mystery option? Now this is interesting.',
+                'You better be ready for whatever happens next.',
+                'That choice has plot-twist energy.',
+                'I was not expecting that answer.',
+                'Okay, now I get to be creative.',
+                'You just unlocked mystery date mode.',
+                'This could be amazing or completely ridiculous.',
+                'I hope you trust my food judgment.',
+                'The food universe will decide your fate.',
+                'You really said surprise me with your whole chest.',
+                'That is a dangerously fun answer.',
+                'I like someone who can commit to the unknown.',
+                'Now I have to make this good.',
+                'You chose adventure over certainty. Respect.',
+                'This date just got way more interesting.',
+                'The crystal ball says you made the right choice.',
+                'Mystery meal incoming.',
+                'Surprise it is. No backing out now.'
+            ]
+        };
+
+
+        const achievements = [
+            '🏆 Taste Buds: Level 5',
+            '🏆 Certified Foodie',
+            '🏆 Main Character Energy',
+            '🏆 Green Flag Detected',
+            '🏆 Professional Date Picker',
+            '🏆 Michelin Mindset',
+            '🏆 Restaurant Royalty',
+            '🏆 Romance Compatibility +100'
+        ];
+
+        function nextNonRepeatingReaction(food) {
+            const lines = foodReactions[food];
+            let index;
+            do {
+                index = Math.floor(Math.random() * lines.length);
+            } while (lines.length > 1 && index === lastReactionIndex[food]);
+            lastReactionIndex[food] = index;
+            return lines[index];
+        }
+
+        function speakFunny(line) {
+            try {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(line);
+                const personalities = [
+                    { pitch: 0.55, rate: 0.78 },
+                    { pitch: 1.65, rate: 1.2 },
+                    { pitch: 1.0, rate: 0.92 },
+                    { pitch: 1.25, rate: 1.05 },
+                    { pitch: 0.8, rate: 1.15 }
+                ];
+                const style = personalities[Math.floor(Math.random() * personalities.length)];
+                utterance.pitch = style.pitch;
+                utterance.rate = style.rate;
+                utterance.volume = 1;
+                window.speechSynthesis.speak(utterance);
+            } catch (err) {
+                console.log('Speech effect unavailable', err);
+            }
+        }
+
+        function playRandomFoodSound() {
+            initAudio();
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+            const type = Math.floor(Math.random() * 4);
+
+            if (type === 0) {
+                // Cartoon boing
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.exponentialRampToValueAtTime(850, now + 0.13);
+                osc.frequency.exponentialRampToValueAtTime(240, now + 0.35);
+                gain.gain.setValueAtTime(0.13, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                osc.start(now);
+                osc.stop(now + 0.42);
+            } else if (type === 1) {
+                // Arcade level-up
+                [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.type = 'square';
+                    const t = now + i * 0.08;
+                    osc.frequency.setValueAtTime(freq, t);
+                    gain.gain.setValueAtTime(0.06, t);
+                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+                    osc.start(t);
+                    osc.stop(t + 0.13);
+                });
+            } else if (type === 2) {
+                // Silly horn
+                [220, 277, 330].forEach((freq, i) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(freq, now);
+                    osc.frequency.linearRampToValueAtTime(freq * 1.15, now + 0.25);
+                    gain.gain.setValueAtTime(0.045, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                });
+            } else {
+                // Comedic wobble
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(140, now + 0.32);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                osc.start(now);
+                osc.stop(now + 0.36);
+            }
+        }
+
+        function burstEffect(emoji) {
+            for (let i = 0; i < 18; i++) {
+                const p = document.createElement('div');
+                p.className = 'burst-particle';
+                p.textContent = emoji;
+                p.style.left = (window.innerWidth / 2) + 'px';
+                p.style.top = (window.innerHeight / 2) + 'px';
+                const angle = (Math.PI * 2 * i) / 18;
+                const distance = 90 + Math.random() * 130;
+                p.style.setProperty('--x', Math.cos(angle) * distance + 'px');
+                p.style.setProperty('--y', Math.sin(angle) * distance + 'px');
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 1000);
+            }
+        }
+
+        function triggerRandomVisual(food) {
+            const emoji = food.match(/[\u{1F300}-\u{1FAFF}]/u)?.[0] || '✨';
+            const effect = Math.floor(Math.random() * 4);
+
+            if (effect === 0) {
+                burstEffect(emoji);
+            } else if (effect === 1) {
+                document.getElementById('date-card').classList.add('screen-shake');
+                setTimeout(() => document.getElementById('date-card').classList.remove('screen-shake'), 400);
+            } else if (effect === 2) {
+                document.body.classList.add('rainbow-flash');
+                setTimeout(() => document.body.classList.remove('rainbow-flash'), 600);
+            } else {
+                burstEffect(['✨','💖','🎉'][Math.floor(Math.random()*3)]);
+            }
+        }
+
+        function showAchievement(text) {
+            achievementToast.textContent = text;
+            achievementToast.classList.add('show');
+            setTimeout(() => achievementToast.classList.remove('show'), 2200);
+        }
+
+        foodOptions.forEach(opt => {
+            opt.addEventListener('click', () => {
+                foodOptions.forEach(item => item.classList.remove('selected'));
+                opt.classList.add('selected');
+                selectedFood = opt.getAttribute('data-food');
+                foodClickCount++;
+
+                const reactionLine = nextNonRepeatingReaction(selectedFood);
+                foodFeedback.textContent = reactionLine;
+                foodFeedback.classList.remove('pop');
+                void foodFeedback.offsetWidth;
+                foodFeedback.classList.add('pop');
+
+                playRandomFoodSound();
+                speakFunny(reactionLine);
+                triggerRandomVisual(selectedFood);
+
+                if ([3, 6, 10, 15].includes(foodClickCount)) {
+                    showAchievement(achievements[Math.floor(Math.random() * achievements.length)]);
+                }
+            });
+        });
+
+        // Mascot tap Easter egg
+        let mascotTaps = 0;
+        mascot.addEventListener('click', () => {
+            mascotTaps++;
+            if (mascotTaps === 1) {
+                attemptText.textContent = 'The bear says hi. Very professionally. 🧸';
+            } else if (mascotTaps === 5) {
+                attemptText.textContent = "You're kind of obsessed with this bear... 👀";
+                showAchievement('🏆 Bear Enthusiast');
+            } else if (mascotTaps === 10) {
+                mascot.textContent = '😎';
+                attemptText.textContent = 'SECRET RIZZ MODE ACTIVATED';
+                burstEffect('💖');
+                showAchievement('🏆 Secret Rizz Mode');
+            } else if (mascotTaps === 25) {
+                attemptText.textContent = 'THIS IS NOW A TEDDY BEAR FAN CLUB.';
+                burstEffect('🧸');
+                playSuccessVoice();
+            }
+        });
+
+        // Submit Date Form
+        const btnConfirm = document.getElementById('btn-confirm');
+        const successScreen = document.getElementById('success-screen');
+        const dateTimeInput = document.getElementById('date-time');
+        const locationInput = document.getElementById('location');
+
+        btnConfirm.addEventListener('click', () => {
+            if (!dateTimeInput.value || !locationInput.value || !selectedFood) {
+                alert('Aww, please pick a date, food type, and location to make it official! 💖');
+                return;
+            }
+
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const loadingStep = document.getElementById('loading-step');
+            const loadingFill = document.getElementById('loading-fill');
+            const steps = [
+                'Consulting the food gods... ✔',
+                'Scanning for red flags... none found ✔',
+                'Verifying cuddle permissions... approved ✔',
+                'Calculating chemistry... 101% ✔',
+                'Making sure you are adorable... confirmed ✔',
+                'DATE APPROVED 🎉'
+            ];
+
+            loadingOverlay.style.display = 'flex';
+            loadingFill.style.width = '0%';
+
+            let stepIndex = 0;
+            const advance = () => {
+                loadingStep.textContent = steps[stepIndex];
+                loadingFill.style.width = (((stepIndex + 1) / steps.length) * 100) + '%';
+                playRandomFoodSound();
+
+                stepIndex++;
+                if (stepIndex < steps.length) {
+                    setTimeout(advance, 1800);
+                } else {
+                    setTimeout(() => {
+                        const dateVal = new Date(dateTimeInput.value);
+                        const options = { weekday: 'long', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+                        document.getElementById('summary-time').textContent = dateVal.toLocaleDateString('en-US', options);
+                        document.getElementById('summary-food').textContent = selectedFood;
+                        document.getElementById('summary-location').textContent = locationInput.value;
+
+                        loadingOverlay.style.display = 'none';
+                        plannerScreen.style.display = 'none';
+                        successScreen.style.display = 'flex';
+                        burstEffect('🎉');
+                        burstEffect('💖');
+                        playSuccessVoice();
+                    }, 1600);
+                }
+            };
+
+            advance();
+        });
+    </script>
+</body>
+</html>
