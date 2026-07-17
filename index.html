@@ -638,6 +638,129 @@
         window.addEventListener('touchstart', startMusicOnInteract);
         window.addEventListener('keydown', startMusicOnInteract);
 
+        // ===============================
+// IDLE EASTER EGG
+// ===============================
+
+let idleTimer;
+let idleStage = 0;
+
+const idleDelays = [
+    10000, // 10 sec
+    8000,
+    10000,
+    15000,
+    15000,
+    15000,
+    15000,
+    20000
+];
+
+const idleMessages = [
+    "👀 Uhhh... you still there?",
+    "📶 Did... did your Wi-Fi die?",
+    "📱 I'm starting to think you accidentally locked your phone.",
+    "🧸 I'll just stand here looking cute until you come back...",
+    "🔍 *Googling* 'How long is too long to wait for a reply?'",
+    "🥺 This is starting to feel like being left on read...",
+    "💀 Okay... now I'm emotionally invested.",
+    "😂 Fine. I'll just keep awkwardly staring at you."
+];
+
+function speakIdle(text) {
+    try {
+        speechSynthesis.cancel();
+        const speech = new SpeechSynthesisUtterance(
+            text.replace(/[^\w\s?.!,']/g, "")
+        );
+        speech.pitch = 1.1;
+        speech.rate = 0.95;
+        speech.volume = 1;
+        speechSynthesis.speak(speech);
+    } catch (e) {}
+}
+
+function idleMessage() {
+
+    // Don't run after the date is confirmed
+    if (successScreen.style.display === "flex") return;
+
+    // Use planner text if they're on planner page
+    if (plannerScreen.style.display === "flex") {
+
+        const plannerLines = [
+            "🤔 That's a lot of thinking for one date...",
+            "🍕 The pizza is getting cold...",
+            "📅 At this rate we're planning our anniversary.",
+            "😅 It's just a date... not a mortgage application.",
+            "☕ Need a snack while you decide?",
+            "😂 Even Google Maps is waiting for the destination."
+        ];
+
+        const msg = plannerLines[Math.min(idleStage, plannerLines.length - 1)];
+
+        foodFeedback.textContent = msg;
+        foodFeedback.classList.remove("pop");
+        void foodFeedback.offsetWidth;
+        foodFeedback.classList.add("pop");
+
+        speakIdle(msg);
+
+    } else {
+
+        const msg = idleMessages[Math.min(idleStage, idleMessages.length - 1)];
+
+        attemptText.textContent = msg;
+
+        if (idleStage >= 3)
+            mascot.textContent = "👀";
+
+        if (idleStage >= 5)
+            mascot.textContent = "🥺";
+
+        speakIdle(msg);
+    }
+
+    if (idleStage === 7) {
+        showAchievement("📱 Achievement Unlocked: Left Me On Read");
+    }
+
+    idleStage++;
+
+    const nextDelay =
+        idleDelays[Math.min(idleStage, idleDelays.length - 1)];
+
+    idleTimer = setTimeout(idleMessage, nextDelay);
+}
+
+function resetIdleTimer() {
+
+    clearTimeout(idleTimer);
+
+    idleStage = 0;
+
+    idleTimer = setTimeout(idleMessage, idleDelays[0]);
+}
+
+[
+    "click",
+    "mousemove",
+    "keydown",
+    "touchstart",
+    "touchmove",
+    "input",
+    "change",
+    "scroll"
+].forEach(event => {
+    window.addEventListener(event, resetIdleTimer, { passive: true });
+});
+
+resetIdleTimer();
+
+// ===============================
+// END IDLE EASTER EGG
+// ===============================
+
         // Floating Hearts Background generator
         const heartsBg = document.getElementById('hearts-bg');
         const heartIcons = ['💖', '❤️', '💝', '✨', '🌸', '💕'];
