@@ -870,6 +870,11 @@ resetIdleTimer();
                 osc.stop(now + 0.4 + i * 0.05);
             }
 
+            // Prevent selecting past dates
+dateTimeInput.min = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 16);
+
             // Move screens
             askScreen.style.display = 'none';
             plannerScreen.style.display = 'flex';
