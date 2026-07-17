@@ -1155,7 +1155,7 @@
 
                 stepIndex++;
                 if (stepIndex < steps.length) {
-                    setTimeout(advance, 1800);
+                    setTimeout(advance, 3000);
                 } else {
                     setTimeout(() => {
                         const dateVal = new Date(dateTimeInput.value);
@@ -1170,7 +1170,7 @@
                         burstEffect('🎉');
                         burstEffect('💖');
                         playSuccessVoice();
-                    }, 1600);
+                    }, 3000);
                 }
             };
 
