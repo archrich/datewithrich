@@ -1260,6 +1260,35 @@ dateTimeInput.min = new Date(Date.now() - new Date().getTimezoneOffset() * 60000
                 return;
             }
 
+            // 🚨 Prevent choosing a time that's already passed today
+const selectedDate = new Date(dateTimeInput.value);
+const now = new Date();
+
+if (
+    selectedDate.toDateString() === now.toDateString() &&
+    selectedDate.getTime() < now.getTime()
+) {
+    playRandomFoodSound();
+
+    const msg = "🚨 TIME TRAVEL DETECTED! Pick a later time today! 😂";
+
+    foodFeedback.textContent = msg;
+    foodFeedback.classList.remove('pop');
+    void foodFeedback.offsetWidth;
+    foodFeedback.classList.add('pop');
+
+    burstEffect('🚨');
+
+    document.getElementById('date-card').classList.add('screen-shake');
+    setTimeout(() => {
+        document.getElementById('date-card').classList.remove('screen-shake');
+    }, 500);
+
+    speakFunny(msg);
+
+    return;
+}
+
             const loadingOverlay = document.getElementById('loading-overlay');
             const loadingStep = document.getElementById('loading-step');
             const loadingFill = document.getElementById('loading-fill');
