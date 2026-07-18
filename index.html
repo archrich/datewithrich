@@ -1261,13 +1261,15 @@ dateTimeInput.min = new Date(Date.now() - new Date().getTimezoneOffset() * 60000
             }
 
             // Prevent choosing a time that already passed today
-            const selectedDate = new Date(dateTimeInput.value);
-            const now = new Date();
+            const selected = dateTimeInput.value;
 
-            if (
-                selectedDate.toDateString() === now.toDateString() &&
-                selectedDate.getTime() < now.getTime()
-            ) {
+const now = new Date();
+const current = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 16);
+
+// Reject any date/time before the current minute
+if (selected < current) {
                 initAudio();
 
                 if (audioCtx && audioCtx.state === 'suspended') {
