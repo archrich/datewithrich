@@ -1260,53 +1260,112 @@ dateTimeInput.min = new Date(Date.now() - new Date().getTimezoneOffset() * 60000
                 return;
             }
 
-            // 🚨 Prevent choosing a time that's already passed today
-const selectedDate = new Date(dateTimeInput.value);
-const now = new Date();
+            // Prevent choosing a time that already passed today
+            const selectedDate = new Date(dateTimeInput.value);
+            const now = new Date();
 
-if (
-    selectedDate.toDateString() === now.toDateString() &&
-    selectedDate.getTime() < now.getTime()
-) {
-   initAudio();
+            if (
+                selectedDate.toDateString() === now.toDateString() &&
+                selectedDate.getTime() < now.getTime()
+            ) {
+                initAudio();
 
-const sirenStart = audioCtx.currentTime;
+                if (audioCtx && audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
 
-for (let i = 0; i < 8; i++) {
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    const startTime = sirenStart + (i * 0.14);
+                const sirenStart = audioCtx.currentTime;
 
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
+                for (let i = 0; i < 8; i++) {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    const startTime = sirenStart + (i * 0.14);
 
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(i % 2 === 0 ? 650 : 950, startTime);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
 
-    gain.gain.setValueAtTime(0.12, startTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.13);
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(i % 2 === 0 ? 650 : 950, startTime);
 
-    osc.start(startTime);
-    osc.stop(startTime + 0.14);
-}
+                    gain.gain.setValueAtTime(0.12, startTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.13);
 
-const msg = "🚨 TIME TRAVEL DETECTED! That time already happened today! 😂";
+                    osc.start(startTime);
+                    osc.stop(startTime + 0.14);
+                }
 
-foodFeedback.textContent = msg;
-foodFeedback.classList.remove('pop');
-void foodFeedback.offsetWidth;
-foodFeedback.classList.add('pop');
+                const msg = "🚨 TIME TRAVEL DETECTED! That time already happened today! 😂";
 
-burstEffect('🚨');
+                foodFeedback.textContent = msg;
+                foodFeedback.classList.remove('pop');
+                void foodFeedback.offsetWidth;
+                foodFeedback.classList.add('pop');
 
-document.getElementById('date-card').classList.add('screen-shake');
-setTimeout(() => {
-    document.getElementById('date-card').classList.remove('screen-shake');
-}, 500);
+                burstEffect('🚨');
 
-setTimeout(() => {
-    speakFunny("Time travel detected! That time already happened today. Pick a later time.");
-}, 1200);
+                document.getElementById('date-card').classList.add('screen-shake');
+                setTimeout(() => {
+                    document.getElementById('date-card').classList.remove('screen-shake');
+                }, 500);
+
+                setTimeout(() => {
+                    speakFunny("Time travel detected! That time already happened today. Pick a later time.");
+                }, 1200);
+
+                return;
+            }
+
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const loadingStep = document.getElementById('loading-step');
+            const loadingFill = document.getElementById('loading-fill');
+            const steps = [
+                'Consulting the food gods... ✔',
+                'Scanning for red flags... none found ✔',
+                'Verifying cuddle permissions... approved ✔',
+                'Calculating chemistry... 101% ✔',
+                'Making sure you are adorable... confirmed ✔',
+                'DATE APPROVED 🎉'
+            ];
+
+            loadingOverlay.style.display = 'flex';
+            loadingFill.style.width = '0%';
+
+            let stepIndex = 0;
+            const advance = () => {
+                loadingStep.textContent = steps[stepIndex];
+                loadingFill.style.width = (((stepIndex + 1) / steps.length) * 100) + '%';
+                playRandomFoodSound();
+
+                stepIndex++;
+                if (stepIndex < steps.length) {
+                    setTimeout(advance, 3000);
+                } else {
+                    setTimeout(() => {
+                        const dateVal = new Date(dateTimeInput.value);
+                        const options = {
+                            weekday: 'long',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        };
+
+                        document.getElementById('summary-time').textContent =
+                            dateVal.toLocaleDateString('en-US', options);
+                        document.getElementById('summary-food').textContent = selectedFood;
+                        document.getElementById('summary-location').textContent = locationInput.value;
+
+                        loadingOverlay.style.display = 'none';
+                        plannerScreen.style.display = 'none';
+                        successScreen.style.display = 'flex';
+                        burstEffect('🎉');
+                        burstEffect('💖');
+                        playSuccessVoice();
+                    }, 3000);
+                }
+            };
+
+            advance();
         });
     </script>
 </body>
